@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+
+  migrations:
+    container_name: "admin-migrations"
+    command: python -m migrations
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=admin
+    env_file:
+      - ".env"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./sch_link:/opt/sch_link:ro"
+      - "./migrations:/opt/migrations:rw"
+      - "./alembic.ini:/opt/alembic.ini"
+    depends_on:
+      - db
+
+  db:
+    container_name: "admin-db"
+    image: postgres:16-alpine3.19
+    hostname: "admin"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=admin
