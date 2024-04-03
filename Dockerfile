@@ -9,5 +9,4 @@ ENV \
 
 COPY ./requirements.txt /opt/requirements.txt
 
-RUN pip install --no-cache-dir -r /opt/requirements.txt
-RUN pip install --no-cache-dir asyncpg
+RUN pip install --no-cache-dir -r requirements.txt

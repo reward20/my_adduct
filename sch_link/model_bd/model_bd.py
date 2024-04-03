@@ -1,5 +1,5 @@
+from datetime import datetime, UTC
 from typing import TYPE_CHECKING, Union
-from datetime import datetime
 
 from sqlalchemy import (Column,
                         BIGINT,
@@ -8,7 +8,7 @@ from sqlalchemy import (Column,
                         CheckConstraint,
                         CHAR,
                         BOOLEAN,
-                        DATETIME,
+                        TIMESTAMP, func,
                         )
 from sqlalchemy.orm import relationship
 
@@ -21,6 +21,7 @@ __all__ = [
     "Post",
     "Comment"
 ]
+
 
 class User(Base):
     __table_args__ = (
@@ -35,14 +36,14 @@ class User(Base):
         email: str
         password: str
         comment: list["Comment"]
-        date_registry: datetime
+        date_registry: func
         post: list["Post"]
     else:
         id = Column(BIGINT, primary_key=True)
         name = Column(VARCHAR(length=128), nullable=False, unique=True)
         email = Column(VARCHAR(length=128), nullable=False, unique=True)
         password = Column(CHAR(length=64), nullable=False)
-        date_registry = Column(DATETIME, default=datetime.now())
+        date_registry = Column(TIMESTAMP, nullable=False, default=datetime.now(tz=UTC))
         comment = relationship(argument="Comment", back_populates="user")
         post = relationship("Post", back_populates="user")
 
@@ -73,7 +74,7 @@ class Post(Base):
         heading = Column(VARCHAR(length=128), nullable=False)
         text = Column(VARCHAR(length=1024), nullable=False)
         picture = Column(CHAR(64), nullable=True)
-        date_create = Column(DATETIME, default=datetime.now())
+        date_create = Column(TIMESTAMP, default=lambda: datetime.now(tz=UTC))
         private = Column(BOOLEAN, nullable=False, default=False)
         user = relationship("User", back_populates="post")
         comment = relationship("Comment", back_populates="post")
@@ -95,7 +96,11 @@ class Comment(Base):
         text: str
     else:
         id = Column(BIGINT, primary_key=True)
-        date_create = Column(DATETIME, default=datetime.now())
+        date_create = Column(
+            TIMESTAMP,
+            default=datetime.now(tz=UTC),
+            nullable=False
+        )
         id_user = Column(
             ForeignKey(
                 column=User.id,
@@ -117,3 +122,6 @@ class Comment(Base):
         text = Column(VARCHAR(length=512), nullable=False)
         user = relationship("User", back_populates="comment")
         post = relationship("Post", back_populates="comment")
+
+        def __str__(self) -> str:
+            return f"{self.user} comment under {self.post}"

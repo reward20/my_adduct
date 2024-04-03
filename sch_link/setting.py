@@ -13,8 +13,7 @@ __all__ = [
 ]
 
 from fastapi.staticfiles import StaticFiles
-
-from starlette.templating import Jinja2Templates
+from fastapi.templating import Jinja2Templates
 
 
 class Setting(BaseSettings):
@@ -24,6 +23,12 @@ class Setting(BaseSettings):
 
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
     POSTGRES_URL: PostgresDsn
+    JWT_ACCESS_SECRET_KEY: SecretStr
+    JWT_REFRESH_SECRET_KEY: SecretStr
+    JWT_ACCESS_ALGORITHM: str
+    JWT_REFRESH_ALGORITHM: str
+    JWT_ACCESS_EXP: PositiveInt
+    JWT_REFRESH_EXP: PositiveInt
     GOOGLE_CLIENT_ID: SecretStr
     GOOGLE_CLIENT_TOKEN: SecretStr
     GOOGLE_SCOPES: list[str]
@@ -33,4 +38,4 @@ setting = Setting()
 db_engine = create_async_engine(url=setting.POSTGRES_URL.unicode_string())
 db_session = async_sessionmaker(bind=db_engine)
 templating = Jinja2Templates(directory=setting.BASE_DIR / "templates")
-static = StaticFiles(directory=setting.BASE_DIR / "static")
+static = StaticFiles(directory=setting.BASE_DIR / "static", check_dir=False)

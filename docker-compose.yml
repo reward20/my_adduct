@@ -2,6 +2,17 @@ version: "3.8"
 
 services:
 
+  db:
+    container_name: "admin-db"
+    image: postgres:16-alpine3.19
+    hostname: "admin"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=admin
+
+
+
   migrations:
     container_name: "admin-migrations"
     command: python -m migrations
@@ -14,6 +25,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+
     volumes:
       - "./sch_link:/opt/sch_link:ro"
       - "./migrations:/opt/migrations:rw"
@@ -21,11 +33,3 @@ services:
     depends_on:
       - db
 
-  db:
-    container_name: "admin-db"
-    image: postgres:16-alpine3.19
-    hostname: "admin"
-    environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=admin
