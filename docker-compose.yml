@@ -33,3 +33,16 @@ services:
     depends_on:
       - db
 
+  auth:
+    container_name: "admin-auth"
+    command: python -m auth
+    env_file:
+      - ".env"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./src:/opt/src:ro"
+      - "./auth:/opt/auth:ro"
+    depends_on:
+      - db

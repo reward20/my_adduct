@@ -4,6 +4,11 @@ from pydantic import Field
 
 from .base import Schema
 
+__all__ = [
+    "PostCreateForm",
+    "CommentCreateForm"
+]
+
 
 class PostCreateForm(Schema):
     heading: str = Field(
@@ -26,7 +31,7 @@ class PostCreateForm(Schema):
     )
 
 
-class CommentPostCreate(Schema):
+class CommentCreateForm(Schema):
     text: str = Field(
         min_length=2,
         max_length=512

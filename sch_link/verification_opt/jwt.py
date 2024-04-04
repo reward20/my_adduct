@@ -24,10 +24,15 @@ class JWT(object):
         self.refresh_exp = refresh_exp
         self.access_algorithm = access_algorithm
         self.refresh_algorithm = refresh_algorithm
-        self.token_type = "Yepi"
+        self.token_type = "Red"
 
     @staticmethod
-    def _create_jwt(*, payload: dict, exp: int, key: str, algorithm: str) -> str:
+    def _create_jwt(*,
+                    payload: dict,
+                    exp: int,
+                    key: str,
+                    algorithm: str
+                    ) -> str:
         if "sub" not in payload:
             raise AttributeError
 
